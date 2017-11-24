@@ -31,13 +31,16 @@
                       <span class="price-new">￥{{food.price}}</span>
                       <del v-show="food.oldPrice" class="price-old">￥{{food.oldPrice}}</del>
                     </div>
+                    <div class="cartcontrol-warpper">
+                      <cartControl v-on:cart-add='cartAdd' :food='food'></cartControl>
+                    </div>
                   </div>
                 </li>
               </ul>
             </li>
           </ul>
         </section>
-        <shopcart :delivery-price='seller.deliveryPrice' :minPrice='seller.minPrice'>
+        <shopcart ref="shopcart" :select-food='selectFoods' :delivery-price='seller.deliveryPrice' :minPrice='seller.minPrice'>
           
         </shopcart> 
     </article>
@@ -46,6 +49,7 @@
 <script>
     import BScroll from 'better-scroll'
     import shopcart from '../shopcart/shopcart'
+    import cartControl from '../cartcontrol/cartcontrol'
     const ERR_OK = 0
     export default {
       props: {
@@ -70,6 +74,17 @@
             }
           }
           return 0
+        },
+        selectFoods () {
+          let foods = []
+          this.goods.forEach((good) => {
+            good.foods.forEach((food) => {
+              if (food.count) {
+                foods.push(food)
+              }
+            })
+          })
+          return foods
         }
       },
       created () {
@@ -91,6 +106,7 @@
             click: true
           })
           this.foodScroll = new BScroll(this.$refs.goodWrapper, {
+            click: true,
             probeType: 3
           })
           this.foodScroll.on('scroll', (pos) => {
@@ -115,10 +131,16 @@
           let el = foodList[index]
           this.foodScroll.scrollToElement(el, 300)
           console.log(index)
+        },
+        cartAdd (target) {
+          this.$nextTick(() => {
+            this.$refs['shopcart'].drop(target)
+          })
         }
       },
       components: {
-        shopcart
+        shopcart,
+        cartControl
       }
     }
 </script>
@@ -151,7 +173,6 @@
   top: -1;
   z-index: 10;
 }
-
 .good-menu .menu-item .text{
   display: table-cell;
   width: 56px;
@@ -202,10 +223,11 @@
   overflow: hidden;
 }
 .good-wrapper .food-item{
-   margin: 18px;
-   padding-bottom: 18px;
-   border-bottom: 1px solid rgba(7, 17, 27, .1);
-   overflow: hidden;
+  position: relative;
+  margin: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(7, 17, 27, .1);
+  overflow: hidden;
 }
 .food-item .icon{
   display: inline-block;
@@ -253,5 +275,11 @@
   line-height: 14px;
   margin-top:10px; 
   color: rgb(147,153,159);
+}
+ .cartcontrol-warpper{
+  position: absolute;
+  overflow: hidden;
+  right: 0;
+  bottom: 12px;
 }
 </style>
