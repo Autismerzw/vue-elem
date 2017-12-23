@@ -14,16 +14,29 @@
             <span class="sellCount">月售{{food.sellCount}}份</span>
             <span class="rating"> 好评率{{food.rating}}% </span>
           </p>
+          <div class="price-box">
+            <span class="new">{{food.price}}元</span>
+            <span class="old" v-show="food.oldPrice">{{food.oldPrice}}元</span>
+          </div>
+          <div class="cartcontrol-warppers">
+            <cartcontrol :food='food'></cartcontrol>
+            <div class="buy" v-show="!food.count || food.count === 0" @click="addFirst">
+              加入购物车
+            </div>
+          </div>
         </div>
-        <div class="price-box">
-          <span class="new">{{food.price}}元</span>
-          <span class="old" v-show="food.oldPrice">{{food.oldPrice}}元</span>
+        <split></split>
+        <div class="info" v-show="food.info">
+          <h3 class="info-title">商品介绍</h3>
+          <p class="info-msg">
+            {{food.info}}
+          </p>
         </div>
-        <div class="cartcontrol-warpper">
-          <cartcontrol :food='food'></cartcontrol>
-        </div>
-        <div class="buy" v-show="!food.count || food.count === 0" @click="addFirst">
-          加入购物车
+        <split v-show="food.info"></split>
+        <div class="rating">
+          <h3 class="rating-title">商品评价</h3>
+          <ratingselect
+          @select='selectRating'  @toggle="toggleCountent" :select-type="selectType" :desc="desc" :onlyContent='onlyContent' :ratings="food.ratings"></ratingselect> 
         </div>
       </div>
     </div>
@@ -33,7 +46,12 @@
 <script>
 import BScroll from 'better-scroll'
 import cartcontrol from '../cartcontrol/cartcontrol'
+import split from '../split/split'
+import ratingselect from '../ratingselect/ratingselect'
 import Vue from 'vue'
+// const POSITIVE = 0
+// const NEGATIVE = 1
+const ALL = 2
 export default {
   props: {
     food: {
@@ -42,12 +60,21 @@ export default {
   },
   data () {
     return {
-      showFlag: false
+      showFlag: false,
+      selectType: ALL,
+      onlyContent: true,
+      desc: {
+        all: '全部',
+        positive: '推荐',
+        negative: '吐槽'
+      }
     }
   },
   methods: {
     show () {
       this.showFlag = true
+      this.selectType = ALL
+      this.onlyContent = true
       this.$nextTick(() => {
         if (!this.scroll) {
           this.scroll = new BScroll(this.$refs.foodScroll, {
@@ -67,10 +94,24 @@ export default {
       }
       Vue.set(this.food, 'count', 1)
       this.$emit('cart-add', event.target)
+    },
+    selectRating (type) {
+      this.selectType = type
+      this.$nextTick(() => {
+        this.scroll.refresh()
+      })
+    },
+    toggleCountent () {
+      this.onlyContent = !this.onlyContent
+      this.$nextTick(() => {
+        this.scroll.refresh()
+      })
     }
   },
   components: {
-    cartcontrol
+    cartcontrol,
+    split,
+    ratingselect
   }
 }
 </script>
@@ -120,6 +161,7 @@ export default {
   cursor: pointer;
 }
 .food .content{
+  position: relative;
   margin: 18px;
 }
 .food .content .title{
@@ -139,7 +181,7 @@ export default {
   color: rgba(7, 17, 27, .4);   
 }
 .food .price-box{
-  margin:0 0 18px 18px;
+  margin:18px 0 18px 18px;
 }
 .price-box .new{
   margin-right: 10px;
@@ -155,15 +197,15 @@ export default {
   color: rgb(147, 153, 159);
   text-decoration: line-through;
 }
-.food .cartcontrol-warpper{
+.food .cartcontrol-warppers{
   position: absolute;
-  right: 12px;
+  right: 0;
   bottom: -8px;
 }
 .food .buy{
   position: absolute;
-  right: 18px;
-  bottom: -4px;
+  right: 0;
+  bottom: 4px;
   text-align: center;
   width: 74px;
   padding: 8px 10px;
@@ -172,5 +214,28 @@ export default {
   line-height: 12px;
   background: rgb(0,160,220);
   border-radius: 15px;
+}
+.info{
+  padding: 18px;
+}
+.info .info-title{
+  font-size: 14px;
+  font-weight: 700;
+}
+.info .info-msg{
+  margin-top: 6px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 200;
+  color: rgb(77, 85, 93);
+  line-height: 24px;
+}
+.rating{
+  padding-top: 18px;
+}
+.rating .rating-title{
+  margin-left: 18px;
+  font-size: 14px;
+  font-weight: 700;
 }
 </style>
