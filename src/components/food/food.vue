@@ -35,8 +35,27 @@
         <split v-show="food.info"></split>
         <div class="rating">
           <h3 class="rating-title">商品评价</h3>
-          <ratingselect
-          @select='selectRating'  @toggle="toggleCountent" :select-type="selectType" :desc="desc" :onlyContent='onlyContent' :ratings="food.ratings"></ratingselect> 
+          <ratingselect @select='selectRating'  @toggle="toggleCountent" :select-type="selectType" :desc="desc" :onlyContent='onlyContent' :ratings="food.ratings"></ratingselect>
+          <div class="rating-warpper">
+            <ul v-show="food.ratings && food.ratings.length">
+              <li v-show="needShow(rating.rateType, rating.text)" class="ratings-item" v-for="(rating, index) in food.ratings" :key="index">
+                <div class="user-info">
+                  <span class="user-name">{{rating.username}}</span>
+                  <img class="avatar" :src="rating.avatar" width="12" height="12">
+                </div>
+                <div class="rating-info">
+                  <p class="rating-time">{{rating.rateTime | formatDate}}</p>
+                  <p class="rating-text">
+                    <span :class="{'icon-thumb_up':rating.rateType === 0, 'icon-thumb_down':rating.rateType === 1}"></span>
+                    {{rating.text}}
+                  </p>
+                </div>
+              </li>
+            </ul>
+            <div class="no-rating" v-show="!food.ratings || !food.ratings.length">
+              暂无评价
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -48,9 +67,8 @@ import BScroll from 'better-scroll'
 import cartcontrol from '../cartcontrol/cartcontrol'
 import split from '../split/split'
 import ratingselect from '../ratingselect/ratingselect'
+import {formatDate} from '../../common/js/date'
 import Vue from 'vue'
-// const POSITIVE = 0
-// const NEGATIVE = 1
 const ALL = 2
 export default {
   props: {
@@ -68,6 +86,12 @@ export default {
         positive: '推荐',
         negative: '吐槽'
       }
+    }
+  },
+  filters: {
+    formatDate (time) {
+      let date = new Date(time)
+      return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },
   methods: {
@@ -106,6 +130,16 @@ export default {
       this.$nextTick(() => {
         this.scroll.refresh()
       })
+    },
+    needShow (type, text) {
+      if (this.onlyContent && !text) {
+        return false
+      }
+      if (this.selectType === ALL) {
+        return true
+      } else {
+        return type === this.selectType
+      }
     }
   },
   components: {
@@ -116,7 +150,7 @@ export default {
 }
 </script>
 
-<style>
+<style> 
 .food{
   position: fixed;
   left: 0;
@@ -237,5 +271,50 @@ export default {
   margin-left: 18px;
   font-size: 14px;
   font-weight: 700;
+}
+/* .rating-warpper{
+  padding: 0 18px;
+} */
+.ratings-item{
+  position: relative;
+  padding: 16px 0;
+  margin: 0 18px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(7,17,27,.1);
+  font-size: 10px;
+  color: rgb(147, 153, 159);
+}
+.rating-info .rating-time{
+  line-height: 12px;
+  margin-bottom: 6px; 
+}
+.rating-info .rating-text{
+  font-size: 12px;
+  color: rgb(7, 17, 27);
+  line-height: 16px;
+}
+.icon-thumb_up{
+  color: rgb(0,160,220);
+  line-height: 24px;
+  vertical-align: middle;
+}
+.icon-thumb_down{
+   color: rgb(147, 153, 159);
+  line-height: 24px;
+  vertical-align: middle;
+  
+}
+.ratings-item .user-info{
+  float: right;
+}
+.user-info .avatar{
+  margin-left: 6px;
+  vertical-align: middle; 
+}
+.no-rating{
+  font-size: 13px;
+  padding: 18px 0;
+  margin: 0 18px;
+  color: rgb(147, 153, 159);
 }
 </style>
