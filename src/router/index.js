@@ -3,7 +3,7 @@ import Router from 'vue-router'
 // import header from '@/components/v-header/header.vue'
 import goods from '@/components/goods/goods'
 import seller from '@/components/seller/seller'
-import rationgs from '@/components/rationgs/rationgs'
+import ratings from '@/components/ratings/ratings'
 import VueResource from 'vue-resource'
 
 Vue.use(Router)
@@ -27,8 +27,8 @@ export default new Router({
       component: seller
     },
     {
-      path: '/rationgs',
-      component: rationgs
+      path: '/ratings',
+      component: ratings
     }
 
   ],

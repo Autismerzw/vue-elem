@@ -215,7 +215,7 @@ export default {
   color: rgba(7, 17, 27, .4);   
 }
 .food .price-box{
-  margin:18px 0 18px 18px;
+  margin:18px 0 18px 0;
 }
 .price-box .new{
   margin-right: 10px;

@@ -69,6 +69,7 @@ export default {
     background-image: url('../../../resource/img/star48_half@2x.png')
 }
 .star.star-36 .star-itme{
+    display: inline-block;    
     width: 15px;
     height: 15px;
     margin-right:6px;
@@ -87,6 +88,7 @@ export default {
     background-image: url('../../../resource/img/star36_half@2x.png')
 }
 .star.star-24 .star-itme{
+    display: inline-block;    
     width: 10px;
     height: 10px;
     margin-right:3px;
