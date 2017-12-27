@@ -25,7 +25,7 @@ var app = express()
 var appData = require('../data.json')
 var seller = appData.seller
 var goods = appData.goods
-var rationgs = appData.rationgs
+var ratings = appData.ratings
 //定义模拟接口路由 
 var apiRoutes = express.Router()
  
@@ -41,10 +41,10 @@ apiRoutes.get('/goods',function (req,res){
     data : goods
   })
 })
-apiRoutes.get('/rationgs',function (req,res){
+apiRoutes.get('/ratings',function (req,res){
   res.json({
     erron : 0,
-    data : rationgs
+    data : ratings
   })
 })
 

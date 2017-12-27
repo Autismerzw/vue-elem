@@ -298,7 +298,7 @@ export default {
         text-align: center;
         font-weight: 700;
     }
-    .star-wrapper{
+    .detail-wrapper .star-wrapper{
         margin-top: 18px;
         padding: 2px 0;
         text-align: center
