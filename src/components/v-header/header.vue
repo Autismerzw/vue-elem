@@ -45,7 +45,7 @@
                         <div class="line"></div>
                     </div>
                     <ul v-if="seller.supports" class="supports-items">
-                       <li v-for="item in seller.supports" :key="item.key" class="supports-item">
+                       <li v-for="(item, index) in seller.supports" :key="index" class="supports-item">
                             <span class="icon" :class='classMap3x[item.type]'></span>
                             {{item.description}}   
                        </li>
@@ -73,7 +73,6 @@ import star from '../star/star'
 
 export default {
   created () {
-    console.log(this.seller)
     this.classMap2x = ['decrease', 'discount', 'guarantee', 'invoice', 'special']
     this.classMap3x = ['decrease2', 'discount2', 'guarantee2', 'invoice2', 'special2']
   },
@@ -320,7 +319,6 @@ export default {
         padding: 0 12px;
     }
     .detail .supports-items{
-        /* text-align: center; */
         width: 80%;
         margin: 28px auto;
 
