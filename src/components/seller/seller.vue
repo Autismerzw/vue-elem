@@ -28,6 +28,10 @@
                     </div>
                   </li>
                 </ul>
+                <div class="ravorite" @click="toggleFavorite">
+                  <span class="icon-favorite" :class="{'active':farorite}"></span>
+                  <span class="text">{{faroriteText}}</span>
+                </div>
             </div>
             <split></split>
             <div class="bulletins">
@@ -53,6 +57,13 @@
                 </ul>
               </div>
             </div>
+            <split></split>
+            <div class="info">
+              <h2 class="title">商家信息</h2>  
+              <ul>
+                <li class="info-item" v-for="(info, index) in seller.infos" :key="index">{{info}}</li>
+              </ul>
+            </div>             
         </div>
     </div>
 </template>
@@ -61,6 +72,7 @@
 import star from '../star/star'
 import split from '../split/split'
 import BScroll from 'better-scroll'
+import {saveToLocal, loadFromLocal} from '../../common/js/store'
 export default {
   created () {
     this.classMap4x = ['decrease3', 'discount3', 'guarantee3', 'invoice3', 'special3']
@@ -68,6 +80,18 @@ export default {
   props: {
     seller: {
       type: Object
+    }
+  },
+  data () {
+    return {
+      farorite: (() => {
+        return loadFromLocal(this.seller.id, 'farorite', false)
+      })()
+    }
+  },
+  computed: {
+    faroriteText () {
+      return this.farorite ? '已收藏' : '收藏'
     }
   },
   watch: {
@@ -112,6 +136,13 @@ export default {
           }
         })
       }
+    },
+    toggleFavorite (event) {
+      if (!event._constructed) {
+        return
+      }
+      this.farorite = !this.farorite
+      saveToLocal(this.seller.id, 'farorite', this.farorite)
     }
   },
   components: {
@@ -131,7 +162,31 @@ export default {
   overflow: hidden;
 }
 .overviews{
+  position: relative;
   padding: 18px;
+}
+.overviews .ravorite{
+  position: absolute;
+  width: 50px;
+  top: 18px;
+  right: 11px;
+  text-align: center;
+  cursor: pointer;
+}
+.ravorite .icon-favorite{
+  color: #d4d6d9;  
+  display: block;
+  line-height: 24px;
+  font-size: 24px;
+}
+.icon-favorite.active{
+  color: rgb(240,20,20)
+}
+.ravorite .text{
+  font-size: 10px;
+  line-height: 10px;
+  margin-top: 4px; 
+  color: rgb(77,85,93);
 }
 .overviews .title{
   font-size: 14px;
@@ -257,5 +312,25 @@ export default {
 }
 .pic-item:last-child{
   margin: 0;
+}
+.info {
+  padding: 18px 18px 0 18px; 
+    color:   rgb(7,17,27);
+}
+.info .title{
+  font-size: 14px;
+  color: rgb(7,17,27);
+  line-height: 14px;
+  border-bottom:1px solid rgba(7,17,27,.1);
+  padding-bottom: 8px; 
+}
+.info-item{
+  padding: 16px 12px;
+  line-height: 16px;
+  border-bottom:1px solid rgba(7,17,27,.1);
+  font-size: 12px;
+}
+.info-item:last-child{
+  border: 0;
 }
 </style>

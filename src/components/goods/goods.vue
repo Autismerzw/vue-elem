@@ -131,7 +131,6 @@
           let foodList = this.$refs.goodWrapper.getElementsByClassName('food-item-hook')
           let el = foodList[index]
           this.foodScroll.scrollToElement(el, 300)
-          console.log(index)
         },
         selectFood (food, $event) {
           if (!event._constructed) {
